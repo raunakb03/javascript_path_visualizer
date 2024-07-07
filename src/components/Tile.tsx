@@ -1,3 +1,4 @@
+import { twMerge } from "tailwind-merge";
 import {
   END_TILE_STYLE,
   MAX_ROWS,
@@ -12,20 +13,7 @@ interface MouseFunction {
   (row: number, col: number): void;
 }
 
-type TileProps = {
-  row: number;
-  col: number;
-  isStart: boolean;
-  isEnd: boolean;
-  isTraversed: boolean;
-  isWall: boolean;
-  isPath: boolean;
-  handleMouseDown: MouseFunction;
-  handleMouseUp: MouseFunction;
-  handleMouseEnter: MouseFunction;
-};
-
-const Tile = ({
+export function Tile({
   row,
   col,
   isStart,
@@ -36,34 +24,45 @@ const Tile = ({
   handleMouseDown,
   handleMouseUp,
   handleMouseEnter,
-}: TileProps) => {
-  const tileTypeStyle = isStart
-    ? START_TILE_STYLE
-    : isEnd
-      ? END_TILE_STYLE
-      : isWall
-        ? WALL_TILE_STYLE
-        : isPath
-          ? PATH_TILE_STYLE
-          : isTraversed
-            ? TRAVERSED_TILE_STYLE
-            : TILE_STYLE;
-  if (isStart == true) {
-    console.log(tileTypeStyle);
+}: {
+  row: number;
+  col: number;
+  isStart: boolean;
+  isEnd: boolean;
+  isTraversed: boolean;
+  isWall: boolean;
+  isPath: boolean;
+  handleMouseDown: MouseFunction;
+  handleMouseUp: MouseFunction;
+  handleMouseEnter: MouseFunction;
+}) {
+  let tileTyleStyle;
+
+  if (isStart) {
+    tileTyleStyle = START_TILE_STYLE;
+  } else if (isEnd) {
+    tileTyleStyle = END_TILE_STYLE;
+  } else if (isWall) {
+    tileTyleStyle = WALL_TILE_STYLE;
+  } else if (isPath) {
+    tileTyleStyle = PATH_TILE_STYLE;
+  } else if (isTraversed) {
+    tileTyleStyle = TRAVERSED_TILE_STYLE;
+  } else {
+    tileTyleStyle = TILE_STYLE;
   }
 
   const borderStyle =
-    row == MAX_ROWS - 1 ? "border-b" : col == 0 ? "border-l" : "";
-  const edgeStyle = row == MAX_ROWS - 1 && col == 0 ? "border-l" : "";
+    row === MAX_ROWS - 1 ? "border-b" : col === 0 ? "border-l" : "";
+  const edgeStyle = row === MAX_ROWS - 1 && col === 0 ? "border-l" : "";
+
   return (
     <div
-      className={`${tileTypeStyle} ${borderStyle} ${edgeStyle}`}
+      className={twMerge(tileTyleStyle, borderStyle, edgeStyle)}
       id={`${row}-${col}`}
       onMouseDown={() => handleMouseDown(row, col)}
       onMouseUp={() => handleMouseUp(row, col)}
       onMouseEnter={() => handleMouseEnter(row, col)}
     />
   );
-};
-
-export default Tile;
+}
